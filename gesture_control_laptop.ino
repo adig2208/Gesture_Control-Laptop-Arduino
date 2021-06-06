@@ -10,7 +10,7 @@ void setup() {
    pinMode(Trigger_L,OUTPUT);
   pinMode(Echo_L,INPUT);
  }
-float Distance(int Trigger,int Echo) /* To find the distance of hand*/
+float Distance(int Trigger,int Echo) 
 {
   float time1;
   float dist;
