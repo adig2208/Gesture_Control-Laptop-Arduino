@@ -25,7 +25,7 @@ void setup() {
   pinMode(Trigger_L, OUTPUT);
   pinMode(Echo_L, INPUT);
   pinMode(LED_Pin, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(2), wakeUpNow, LOW); // Assuming digital pin 2 is used for wake-up
+  attachInterrupt(digitalPinToInterrupt(2), wakeUpNow, LOW); 
 
   Serial.println("Calibration Start");
   calibrateSensors();
@@ -56,12 +56,10 @@ float Distance(int Trigger, int Echo) {
 }
 
 void goToSleep() {
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN); // Deepest sleep mode
-  sleep_enable(); // Enable sleep mode
-  sleep_mode(); // Enter sleep mode
-
-  // Device is now asleep and will continue from here when woken up
-  sleep_disable(); // Disable sleep mode after wake up
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+  sleep_enable();
+  sleep_mode(); 
+  sleep_disable(); 
 }
 
 void loop() {
@@ -127,24 +125,7 @@ void loop() {
     Serial.println("Enter");
     delay(1500);
   }
-  if (distanceR < 10 && distanceL > 30 && distanceL < 50) {
-    Serial.println("Volume_Up");
-    delay(500); // Short delay to prevent multiple triggers
-  }
-  // Volume Down: Left hand moves closer while right hand remains static
-  else if (distanceL < 10 && distanceR > 30 && distanceR < 50) {
-    Serial.println("Volume_Down");
-    delay(500);
-  }
-  // Existing gestures for reference
-  else if (distanceR < 20 && distanceR > 0) {
-    Serial.println("Scroll_Up");
-    delay(300);
-  } else if (distanceL < 20 && distanceL > 0) {
-    Serial.println("Change_Tab");
-    delay(300);
-  }
-
+  
   delay(100);
   goToSleep();
 
