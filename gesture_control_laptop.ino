@@ -1,31 +1,47 @@
-int Trigger_R=2;
-int Echo_R=3;
-int Trigger_L=4;
-int Echo_L=5;
+const int Trigger_R = 2;
+const int Echo_R = 3;
+const int Trigger_L = 4;
+const int Echo_L = 5;
+const int LED_Pin = 13; 
+
+float minDistR = 50.0;
+float minDistL = 50.0;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(Trigger_R,OUTPUT);
-  pinMode(Echo_R,INPUT);
-   pinMode(Trigger_L,OUTPUT);
-  pinMode(Echo_L,INPUT);
- }
-float Distance(int Trigger,int Echo) 
-{
-  float time1;
-  float dist;
-  digitalWrite(Trigger,LOW);
-  delayMicroseconds(3);
-  digitalWrite(Trigger,HIGH);
-  delayMicroseconds(1000);
-  digitalWrite(Trigger,LOW);
-  time1 = pulseIn(Echo,HIGH);
-  dist= time1*34/2000;
-  if(dist>50)
-  {dist=50;}
-  delay(10);
-  return(dist);
+  pinMode(Trigger_R, OUTPUT);
+  pinMode(Echo_R, INPUT);
+  pinMode(Trigger_L, OUTPUT);
+  pinMode(Echo_L, INPUT);
+  pinMode(LED_Pin, OUTPUT);
+  
+  Serial.println("Calibration Start");
+  calibrateSensors();
+  Serial.println("Calibration Done");
+}
+
+void calibrateSensors() {
+  for (int i = 0; i < 10; i++) {
+    float distanceR = Distance(Trigger_R, Echo_R);
+    float distanceL = Distance(Trigger_L, Echo_L);
+    minDistR = min(minDistR, distanceR);
+    minDistL = min(minDistL, distanceL);
+    delay(100);
   }
+  minDistR += 5.0;
+  minDistL += 5.0;
+}
+
+float Distance(int Trigger, int Echo) {
+  digitalWrite(Trigger, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Trigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Trigger, LOW);
+  float time = pulseIn(Echo, HIGH);
+  float distance = time * 0.034 / 2;
+  return min(distance, 50); 
+}
  
 void loop() 
 {
@@ -90,6 +106,25 @@ if((distance1>0 && distance1<50) && (distance2>0 && distance2<50))
   Serial.println("Enter");
   delay(1500);
 }
+  if (distanceR < 10 && distanceL > 30 && distanceL < 50) {
+    Serial.println("Volume_Up");
+    delay(500); // Short delay to prevent multiple triggers
+  }
+  // Volume Down: Left hand moves closer while right hand remains static
+  else if (distanceL < 10 && distanceR > 30 && distanceR < 50) {
+    Serial.println("Volume_Down");
+    delay(500);
+  }
+  // Existing gestures for reference
+  else if (distanceR < 20 && distanceR > 0) {
+    Serial.println("Scroll_Up");
+    delay(300);
+  }
+  else if (distanceL < 20 && distanceL > 0) {
+    Serial.println("Change_Tab");
+    delay(300);
+  }
+
 
 delay(100);
   
