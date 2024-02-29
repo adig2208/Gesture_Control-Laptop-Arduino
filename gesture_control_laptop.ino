@@ -2,7 +2,7 @@ const int Trigger_R = 2;
 const int Echo_R = 3;
 const int Trigger_L = 4;
 const int Echo_L = 5;
-const int LED_Pin = 13; 
+const int LED_Pin = 13;
 
 float minDistR = 50.0;
 float minDistL = 50.0;
@@ -14,7 +14,7 @@ void setup() {
   pinMode(Trigger_L, OUTPUT);
   pinMode(Echo_L, INPUT);
   pinMode(LED_Pin, OUTPUT);
-  
+
   Serial.println("Calibration Start");
   calibrateSensors();
   Serial.println("Calibration Done");
@@ -40,92 +40,86 @@ float Distance(int Trigger, int Echo) {
   digitalWrite(Trigger, LOW);
   float time = pulseIn(Echo, HIGH);
   float distance = time * 0.034 / 2;
-  return min(distance, 50); 
+  return min(distance, 50);
 }
- 
-void loop() 
-{
-  
-  float distance1 =Distance(Trigger_R,Echo_R);
-  float distance2 =Distance(Trigger_L,Echo_L);
- 
- while(  distance1<20 &&  distance1>0 )
-     { 
-        delay(300);
-        distance1 =Distance(Trigger_R,Echo_R);
-        distance2 =Distance(Trigger_L,Echo_L);
-        if( distance1 == 50 )                                  
-          {
-            Serial.println("Forward");
-            delay(1000);
-           }
-        distance1 =Distance(Trigger_R,Echo_R);
-        distance2 =Distance(Trigger_L,Echo_L);
-        if( distance1>0 && distance1<20 && distance2 == 50 )  
-          {
-          Serial.println("Scroll_Up");
-          delay(1);
-          }
-    } 
-        
- if(distance1>25 && distance1<50 && distance2 == 50)   
- {
-   Serial.println("Scroll_Down");
-   delay(100);
-   } 
 
+void loop() {
 
-      
-while(  distance2<20 &&  distance2>0 )
-     { 
-        delay(300);
-        distance1 =Distance(Trigger_R,Echo_R);
-        distance2 =Distance(Trigger_L,Echo_L);
-        if( distance2 == 50 )
-          {
-            Serial.println("Rewind");            
-            delay(1000);
-           }
-           
-        distance1 =Distance(Trigger_R,Echo_R);
-        distance2 =Distance(Trigger_L,Echo_L);
-        if( distance2>0 && distance2<20 && distance1 == 50 ) 
-          {
-          Serial.println("Change_Tab");
-          delay(1000);
-          }
-    } 
-        
- if(distance2>25 && distance2<50 && distance1 == 50) 
-  {
-   Serial.println("Drop_Down");
-   delay(1000);
-   } 
-if((distance1>0 && distance1<50) && (distance2>0 && distance2<50)) 
-{
-  Serial.println("Enter");
-  delay(1500);
-}
-  if (distanceR < 10 && distanceL > 30 && distanceL < 50) {
+  float distance1 = Distance(Trigger_R, Echo_R);
+  float distance2 = Distance(Trigger_L, Echo_L);
+
+  if (distanceR > 0 && distanceR < 10) {
     Serial.println("Volume_Up");
-    delay(500); // Short delay to prevent multiple triggers
-  }
-  // Volume Down: Left hand moves closer while right hand remains static
-  else if (distanceL < 10 && distanceR > 30 && distanceR < 50) {
-    Serial.println("Volume_Down");
+    digitalWrite(LED_Pin, HIGH);
     delay(500);
-  }
-  // Existing gestures for reference
-  else if (distanceR < 20 && distanceR > 0) {
-    Serial.println("Scroll_Up");
-    delay(300);
-  }
-  else if (distanceL < 20 && distanceL > 0) {
-    Serial.println("Change_Tab");
-    delay(300);
+    digitalWrite(LED_Pin, LOW);
+  } else if (distanceL > 0 && distanceL < 10) {
+    Serial.println("Volume_Down");
+    digitalWrite(LED_Pin, HIGH); 
+    delay(500);
+    digitalWrite(LED_Pin, LOW);
   }
 
+  while (distance1 < 20 && distance1 > 0) {
+    delay(300);
+    distance1 = Distance(Trigger_R, Echo_R);
+    distance2 = Distance(Trigger_L, Echo_L);
+    if (distance1 == 50) {
+      Serial.println("Forward");
+      digitalWrite(LED_Pin, HIGH); 
+      delay(1000);
+      digitalWrite(LED_Pin, LOW);
+    }
+    distance1 = Distance(Trigger_R, Echo_R);
+    distance2 = Distance(Trigger_L, Echo_L);
+    if (distance1 > 0 && distance1 < 20 && distance2 == 50) {
+      Serial.println("Scroll_Up");
+      digitalWrite(LED_Pin, HIGH); 
+      delay(1);
+      digitalWrite(LED_Pin, LOW);
+    }
+  }
 
-delay(100);
-  
+  if (distance1 > 25 && distance1 < 50 && distance2 == 50) {
+    Serial.println("Scroll_Down");
+    digitalWrite(LED_Pin, HIGH); 
+    delay(100);
+    digitalWrite(LED_Pin, LOW);
+  }
+
+  while (distance2 < 20 && distance2 > 0) {
+    delay(300);
+    distance1 = Distance(Trigger_R, Echo_R);
+    distance2 = Distance(Trigger_L, Echo_L);
+    if (distance2 == 50) {
+      Serial.println("Rewind");
+      digitalWrite(LED_Pin, HIGH); 
+      delay(1000);
+      digitalWrite(LED_Pin, LOW);
+    }
+
+    distance1 = Distance(Trigger_R, Echo_R);
+    distance2 = Distance(Trigger_L, Echo_L);
+    if (distance2 > 0 && distance2 < 20 && distance1 == 50) {
+      Serial.println("Change_Tab");
+      digitalWrite(LED_Pin, HIGH); 
+      delay(1000);
+      digitalWrite(LED_Pin, LOW);
+    }
+  }
+
+  if (distance2 > 25 && distance2 < 50 && distance1 == 50) {
+    Serial.println("Drop_Down");
+    digitalWrite(LED_Pin, HIGH); 
+    delay(1000);
+    digitalWrite(LED_Pin, LOW);
+  }
+  if ((distance1 > 0 && distance1 < 50) && (distance2 > 0 && distance2 < 50)) {
+    Serial.println("Enter");
+    digitalWrite(LED_Pin, HIGH); 
+    delay(1500);
+    digitalWrite(LED_Pin, LOW);
+  }
+  delay(100);
+
 }
