@@ -41,3 +41,10 @@ For the best experience, ensure your gestures are deliberate and clear, maintain
 
 ## Calibration
 Upon starting, the system will calibrate the sensors based on the initial conditions. Please ensure there is no obstruction in front of the sensors during calibration.
+
+## Advanced Version (gesture_control_advanced.ino)
+- Integrated **FreeRTOS** for real-time multitasking.
+- **Queues** & **Semaphores** to improve sensor responsiveness.
+- Event-driven architecture reduces CPU load.
+- Power management via sleep mode, enhancing battery efficiency.
+- **Mutex-based** sensor access, ensuring accurate data handling.
